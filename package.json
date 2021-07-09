@@ -1,0 +1,25 @@
+{
+  "name": "pancakeswap-sniping-bot",
+  "version": "1.0.0",
+  "description": "pcs sniper triggered on liquidity add. Mr Fatoni github",
+  "main": "bot.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NhymKat/pancakeswap-sniping-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NhymKat/pancakeswap-sniping-bot/issues"
+  },
+  "homepage": "https://github.com/NhymKat/pancakeswap-sniping-bot#readme",
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "ethers": "^5.4.1",
+    "express": "^4.17.1"
+  }
+}
