@@ -6,10 +6,13 @@ const app = express();
 
 const data = {
   WBNB: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c', //wbnb 
-  to_PURCHASE: '0xAD7A67A98426672CbB73a7E00d0252bF1545D8D4',  // token to purchase = BUSD for test
+  // 0x071fa11f7516cdeb366f7f7d91da5049f7086185
+  to_PURCHASE: '0x071fa11f7516cdeb366f7f7d91da5049f7086185', // rockt
+  // to_PURCHASE: '0xAD7A67A98426672CbB73a7E00d0252bF1545D8D4',  // token to purchase = BUSD for test
   factory: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',  //PancakeSwap V2 factory
   router: '0x10ED43C718714eb63d5aA57B78B54704E256024E', //PancakeSwap V2 router
-  recipient: '0x53d16349E55FeCA2ee3436cAdD4EB50479F48D3d', //Recipient wallet address,
+  // recipient: '0x53d16349E55FeCA2ee3436cAdD4EB50479F48D3d', // my wallet 1
+  recipient: '0x53d16349E55FeCA2ee3436cAdD4EB50479F48D3d', // my wallet 2,
   AMOUNT_OF_WBNB : '0.0002',
   Slippage : '20', //in Percentage
   gasPrice : '6', //in gwei
@@ -19,7 +22,8 @@ const data = {
 let initialLiquidityDetected = false;
 
 const bscMainnetUrl = 'https://bsc-dataseed.binance.org/'; //ankr or quiknode
-const privatekey = '66ad20ae2b211eaa5ccf7d500dab77ea6bc6add928f1d90d08016869e54a114f'; //without 0
+// const privatekey = '4dc4aee651c42fd79fcd7c2c1698597f65a3ac8eae13ded7314e59580a750a1c'; // wallet 1 //without 0
+const privatekey = '66ad20ae2b211eaa5ccf7d500dab77ea6bc6add928f1d90d08016869e54a114f'; // wallet 2
 const provider = new ethers.providers.JsonRpcProvider(bscMainnetUrl)
 const wallet = new ethers.Wallet(privatekey);
 const account = wallet.connect(provider);
