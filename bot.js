@@ -6,10 +6,14 @@ const app = express();
 
 const data = {
   WBNB: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c', //wbnb 
-  to_PURCHASE: '0xAD7A67A98426672CbB73a7E00d0252bF1545D8D4',  // token to purchase = BUSD for test
+  to_PURCHASE: '0x11582ef4642b1e7f0a023804b497656e2663bc9b',  // token to purchase = BUSD for test
+  // 0xAD7A67A98426672CbB73a7E00d0252bF1545D8D4 Brother Chibi
+  // 0xe9e7cea3dedca5984780bafc599bd69add087d56 BUSD
   factory: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',  //PancakeSwap V2 factory
   router: '0x10ED43C718714eb63d5aA57B78B54704E256024E', //PancakeSwap V2 router
-  recipient: '0x53d16349E55FeCA2ee3436cAdD4EB50479F48D3d', //Recipient wallet address,
+  // recipient: '0x53d16349E55FeCA2ee3436cAdD4EB50479F48D3d', // ME #1 //Recipient wallet address,
+  recipient: '0xb7E06e100628a379F6E86549749534948Aa64e1b', // ME #2 
+
   AMOUNT_OF_WBNB : '0.0002',
   Slippage : '20', //in Percentage
   gasPrice : '6', //in gwei
