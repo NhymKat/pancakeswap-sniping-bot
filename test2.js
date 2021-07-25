@@ -77,24 +77,52 @@ const run = async () => {
         // 'gasPrice': ethers.utils.parseUnits(`${data.gasPrice}`, 'gwei')
         'gasLimit': 2140790,
         'gasPrice': ethers.utils.parseUnits('6', 'gwei')
-    }
-
-    );
-    try {
-      const receipt = await tx.wait(); 
+    }).then((result) => {
+      //const receipt = await tx.wait(); 
       console.log('Transaction receipt');
-      console.log(receipt);
-    } catch(e) {
-      console.log(`Caught error at receipt: `, e.error);
-      console.log(`\nerror dump:\n\n`, e);
-    }
+      console.log(result);
+}, (error) => {
+    console.log(error);
+    // error.reason - The Revert reason; this is what you probably care about. :)
+    // Additionally:
+    // - error.address - the contract address
+    // - error.args - [ BigNumber(1), BigNumber(2), BigNumber(3) ] in this case
+    // - error.method - "someMethod()" in this case
+    // - error.errorSignature - "Error(string)" (the EIP 838 sighash; supports future custom errors)
+    // - error.errorArgs - The arguments passed into the error (more relevant post EIP 838 custom errors)
+    // - error.transaction - The call transaction used
+});
+    // try {
+    //   const receipt = await tx.wait(); 
+    //   console.log('Transaction receipt');
+    //   console.log(receipt);
+    // } catch(e) {
+    //   console.log(`Caught error at receipt: `, e.error);
+    //   console.log(`\nerror dump:\n\n`, e);
+    // }
   } catch(e) {
-    console.log(`\nCaught error at transaction! Code:`, e.error);
-    console.log(`\nCaught error at transaction! Code:`, e.error);
-    console.log(`\nerror dump:\n\n`, e);
+    console.log(`\nCaught error at transaction!error dump:\n\n`, e);
   }
 
 }
+
+// ERROR RESPONSE EXAMPLE
+// contract.someMethod(1, 2, 3).then((result) => {
+// }, (error) => {
+//     console.log(error);
+//     // error.reason - The Revert reason; this is what you probably care about. :)
+//     // Additionally:
+//     // - error.address - the contract address
+//     // - error.args - [ BigNumber(1), BigNumber(2), BigNumber(3) ] in this case
+//     // - error.method - "someMethod()" in this case
+//     // - error.errorSignature - "Error(string)" (the EIP 838 sighash; supports future custom errors)
+//     // - error.errorArgs - The arguments passed into the error (more relevant post EIP 838 custom errors)
+//     // - error.transaction - The call transaction used
+// });
+
+
+
+
 
 // const run = async () => {
 //   const tokenIn = data.WBNB;
