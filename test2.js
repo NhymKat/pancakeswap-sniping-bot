@@ -6,9 +6,12 @@ const app = express();
 
 const data = {
   WBNB: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c', //wbnb 
-  to_PURCHASE: '0xe9e7cea3dedca5984780bafc599bd69add087d56',  // BUSD: token to purchase
-  factory: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',  //PancakeSwap V2 factory
-  router: '0x10ED43C718714eb63d5aA57B78B54704E256024E', //PancakeSwap V2 router
+    // to_PURCHASE: '0xe9e7cea3dedca5984780bafc599bd69add087d56',  // BUSD: token to purchase
+  to_PURCHASE: '0x91f44af93f784ae7ce939913f45636ce3d864207', //TESTNET BUSD
+    // factory: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',  //PancakeSwap V2 factory
+  factory: '0x6725F303b657a9451d8BA641348b6761A6CC7a17', // TESTNEST Pancakeswap Factory
+    // router: '0x10ED43C718714eb63d5aA57B78B54704E256024E', //PancakeSwap V2 router
+  router: '0xD99D1c33F9fC3444f8101754aBC46c52416550D1', 
   recipient: '0x53d16349E55FeCA2ee3436cAdD4EB50479F48D3d', // my wallet 1
   AMOUNT_OF_WBNB : '0.01', // 4 places including decimal point
   Slippage : '15', //in Percentage
@@ -31,8 +34,9 @@ console.log(chalk.blue('########################################################
 
 
 let initialLiquidityDetected = false;
-const bscMainnetUrl = 'https://bsc-dataseed.binance.org/'; //ankr or quiknode
-const privatekey = '4dc4aee651c42fd79fcd7c2c1698597f65a3ac8eae13ded7314e59580a750a1c'; // LIVE wallet 1 (without 0x)
+// const bscMainnetUrl = 'https://bsc-dataseed.binance.org/'; //BSC Mainnet
+const bscMainnetUrl = 'https://data-seed-prebsc-1-s1.binance.org:8545'; // BSC Testnet
+const privatekey = '4dc4aee651c42fd79fcd7c2c1698597f65a3ac8eae13ded7314e59580a750a1c'; // MAINNET wallet 1 key
 const provider = new ethers.providers.JsonRpcProvider(bscMainnetUrl)
 const wallet = new ethers.Wallet(privatekey);
 const account = wallet.connect(provider);
