@@ -6,17 +6,17 @@ const app = express();
 
 const data = {
   WBNB: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c', //wbnb 
-    // to_PURCHASE: '0xe9e7cea3dedca5984780bafc599bd69add087d56',  // BUSD: token to purchase
-  to_PURCHASE: '0x91f44af93f784ae7ce939913f45636ce3d864207', //TESTNET BUSD
-    // factory: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',  //PancakeSwap V2 factory
-  factory: '0x6725F303b657a9451d8BA641348b6761A6CC7a17', // TESTNEST Pancakeswap Factory
-    // router: '0x10ED43C718714eb63d5aA57B78B54704E256024E', //PancakeSwap V2 router
-  router: '0xD99D1c33F9fC3444f8101754aBC46c52416550D1', 
+  to_PURCHASE: '0xe9e7cea3dedca5984780bafc599bd69add087d56',  // BUSD: token to purchase - NEW tokens will need APPROVAL first
+  // to_PURCHASE: '0x91f44af93f784ae7ce939913f45636ce3d864207', //TESTNET BUSD
+  factory: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',  //PancakeSwap V2 factory
+  // factory: '0x6725F303b657a9451d8BA641348b6761A6CC7a17', // TESTNEST Pancakeswap Factory
+  router: '0x10ED43C718714eb63d5aA57B78B54704E256024E', //PancakeSwap V2 router
+  // router: '0xD99D1c33F9fC3444f8101754aBC46c52416550D1', // TESTNEST Pancakeswap Router
   recipient: '0x53d16349E55FeCA2ee3436cAdD4EB50479F48D3d', // my wallet 1
-  AMOUNT_OF_WBNB : '0.01', // 4 places including decimal point
-  Slippage : '15', //in Percentage
-  gasPrice : '60', //in gwei
-  gasLimit : '3456840' //at least 21000
+  AMOUNT_OF_WBNB : '0.0002',
+  Slippage : '3', //in Percentage
+  gasPrice : ethers.utils.parseUnits(`5`, 'gwei'), //in gwei
+  gasLimit : '35000' //at least 21000
 }
 
 console.clear();
@@ -34,12 +34,23 @@ console.log(chalk.blue('########################################################
 
 
 let initialLiquidityDetected = false;
-// const bscMainnetUrl = 'https://bsc-dataseed.binance.org/'; //BSC Mainnet
-const bscMainnetUrl = 'https://data-seed-prebsc-1-s1.binance.org:8545'; // BSC Testnet
-const privatekey = '4dc4aee651c42fd79fcd7c2c1698597f65a3ac8eae13ded7314e59580a750a1c'; // MAINNET wallet 1 key
+const bscMainnetUrl = 'https://bsc-dataseed.binance.org/'; //BSC Mainnet
+// const bscMainnetUrl = 'https://data-seed-prebsc-1-s1.binance.org:8545'; // BSC Testnet
+const privatekey = '4dc4aee651c42fd79fcd7c2c1698597f65a3ac8eae13ded7314e59580a750a1c'; // MAINNET & TESTNET wallet 1 secret key
 const provider = new ethers.providers.JsonRpcProvider(bscMainnetUrl)
 const wallet = new ethers.Wallet(privatekey);
 const account = wallet.connect(provider);
+const ethBalance = await provider.getBalance(wallet.address)
+console.log(chalk.grey(`Wallet Balance is ${ethers.utils.formatUnits(`${ethBalance}`)}`));
+
+console.log(chalk.grey('\nConnecting to blockchain...'));
+const testconnect = async () => 
+await provider.getBlockNumber().then((result) => {
+    console.log(chalk.green('Connected to blockchain. Current block number is: ' + result));
+});
+
+testconnect();
+
 
 const factory = new ethers.Contract(
   data.factory,
@@ -56,20 +67,30 @@ const router = new ethers.Contract(
   account
 );
 
+// const router = new ethers.Contract(
+//   data.router,
+//   [
+//     'function getAmountsOut(uint amountIn, address[] memory path) public view returns (uint[] memory amounts)',
+//     'function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts)'
+//   ],
+//   account
+// );
+
+
 const run = async () => {
   const tokenIn = data.WBNB;
   const tokenOut = data.to_PURCHASE;
   // const pairAddress = await factory.getPair(tokenIn, tokenOut);
   // console.log(`Liquidity Pair Address: ${pairAddress}`);
 
-  // const amountIn = ethers.utils.parseEther(`${data.AMOUNT_OF_WBNB}`);
-  const amountIn = ethers.utils.parseEther("0.001");
+  const amountIn = ethers.utils.parseUnits(`${data.AMOUNT_OF_WBNB}`, 'ether');
+  console.log(`AmountIn is: ${ethers.utils.formatEther(`${amountIn}`)}`);
   const amounts = await router.getAmountsOut(amountIn, [tokenIn, tokenOut]);
   console.log(`amounts: ${amounts}`)
 
   const amountOutMin = amounts[1].sub(amounts[1].div(`${data.Slippage}`)); 
 
-  try{
+  
     const tx = await router.swapExactETHForTokensSupportingFeeOnTransferTokens(
       amountIn,
       amountOutMin,
@@ -77,56 +98,30 @@ const run = async () => {
       data.recipient,
      Date.now() + 1000 * 60 * 10, //10 minutes
       {
-        // 'gasLimit': ethers.utils.parseUnits(`${data.gasLimit}`),
-        // 'gasPrice': ethers.utils.parseUnits(`${data.gasPrice}`, 'gwei')
-        'gasLimit': 2140790,
-        'gasPrice': ethers.utils.parseUnits('6', 'gwei')
+        'gasLimit': `${data.gasLimit}`,
+        'gasPrice': `${data.gasPrice}`
     }).then((result) => {
-      //const receipt = await tx.wait(); 
+     console.log(`gasPrice: ${ethers.utils.formatUnits(`${data.gasPrice}`, 'gwei')}`)
       console.log('Transaction receipt');
-      console.log(result);
+      console.log(
+        `Transaction Receipt:
+        ---------------------
+        Gas Limit: ${result.gasLimit}
+        Gas Price: ${ethers.utils.formatUnits(`${result.gasPrice}`, 'gwei')}
+        Sent to: ${result.to}
+        Value: ${result.value}
+        Hash: ${result.hash}
+        ---------------------`
+        );
 }, (error) => {
-    console.log(error);
-    // error.reason - The Revert reason; this is what you probably care about. :)
-    // Additionally:
-    // - error.address - the contract address
-    // - error.args - [ BigNumber(1), BigNumber(2), BigNumber(3) ] in this case
-    // - error.method - "someMethod()" in this case
-    // - error.errorSignature - "Error(string)" (the EIP 838 sighash; supports future custom errors)
-    // - error.errorArgs - The arguments passed into the error (more relevant post EIP 838 custom errors)
-    // - error.transaction - The call transaction used
+    console.log(`gasPrice: ${ethers.utils.formatUnits(`${data.gasPrice}`, 'gwei')} | Limit: ${data.gasLimit}`)
+    console.log(
+      `ERROR: ${error.reason}` //extras: error.address .args .method .errorSignature .errorArgs .transaction      
+      );
 });
-    // try {
-    //   const receipt = await tx.wait(); 
-    //   console.log('Transaction receipt');
-    //   console.log(receipt);
-    // } catch(e) {
-    //   console.log(`Caught error at receipt: `, e.error);
-    //   console.log(`\nerror dump:\n\n`, e);
-    // }
-  } catch(e) {
-    console.log(`\nCaught error at transaction!error dump:\n\n`, e);
-  }
+  
 
 }
-
-// ERROR RESPONSE EXAMPLE
-// contract.someMethod(1, 2, 3).then((result) => {
-// }, (error) => {
-//     console.log(error);
-//     // error.reason - The Revert reason; this is what you probably care about. :)
-//     // Additionally:
-//     // - error.address - the contract address
-//     // - error.args - [ BigNumber(1), BigNumber(2), BigNumber(3) ] in this case
-//     // - error.method - "someMethod()" in this case
-//     // - error.errorSignature - "Error(string)" (the EIP 838 sighash; supports future custom errors)
-//     // - error.errorArgs - The arguments passed into the error (more relevant post EIP 838 custom errors)
-//     // - error.transaction - The call transaction used
-// });
-
-
-
-
 
 // const run = async () => {
 //   const tokenIn = data.WBNB;
